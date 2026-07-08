@@ -1,0 +1,17 @@
+{
+	"app": {
+		"name": "test",
+		"port": 9000,
+    "logger": "WinstonNexxusLogger",
+    "token": "test"
+	},
+	"logger": {
+		"level": "info",
+		"logType": "json",
+		"transports": [
+			{
+				"type": "stdout"
+			}
+		]
+	}
+}

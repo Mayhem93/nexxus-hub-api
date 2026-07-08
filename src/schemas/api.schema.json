@@ -1,0 +1,39 @@
+{
+  "$comment": "app",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "port": {
+      "type": "number",
+      "default": 9000
+    },
+    "logger": {
+      "type": "string"
+    },
+    "token": {
+      "type": "string"
+    },
+    "ssl": {
+      "type": "object",
+      "properties": {
+        "sslKeyPath": {
+          "type": "string"
+        },
+        "sslCertPath": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "sslKeyPath",
+        "sslCertPath"
+      ]
+    }
+  },
+  "required": [
+    "name",
+    "logger",
+    "token"
+  ]
+}
