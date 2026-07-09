@@ -9,6 +9,7 @@ interface RegisterNodeRequest extends NexxusHubApiRequest {
     id: string;
     role: string;
     privateIpAddress: string;
+    managementPort: number;
     dependencies: Record<string, string>;
     stats: Record<string, unknown>;
   };
@@ -44,7 +45,7 @@ export default class NodeRoute extends NexxusHubApiBaseRoute {
   }
 
   private registerNode(req: RegisterNodeRequest, res: Response): void {
-    const { id, role, privateIpAddress, dependencies, stats } = req.body;
+    const { id, role, privateIpAddress, managementPort, dependencies, stats } = req.body;
 
     if (typeof id !== 'string' || id.length === 0) {
       throw new InvalidParametersException('"id" is required and must be a non-empty string');
@@ -56,6 +57,10 @@ export default class NodeRoute extends NexxusHubApiBaseRoute {
 
     if (typeof privateIpAddress !== 'string' || privateIpAddress.length === 0) {
       throw new InvalidParametersException('"privateIpAddress" is required and must be a non-empty string');
+    }
+
+    if (typeof managementPort !== 'number' || !Number.isFinite(managementPort) || managementPort <= 0) {
+      throw new InvalidParametersException('"managementPort" is required and must be a finite positive number');
     }
 
     if (typeof dependencies !== 'object' || dependencies === null || Array.isArray(dependencies)) {
@@ -71,17 +76,22 @@ export default class NodeRoute extends NexxusHubApiBaseRoute {
         id,
         role,
         privateIpAddress,
+        managementPort,
         dependencies,
         stats
       },
       Date.now()
     );
 
+    // Kick off this node's per-node stats-refresh interval (starts at registration).
+    NexxusHubApi.startManagedRefresh(record);
+
     res.status(200).json(record);
   }
 
   private deregisterNode(req: DeleteNodeRequest, res: Response): void {
-    NexxusHubApi.registry.remove(req.params.id);
+    // dropNode removes from the registry AND stops the node's refresh timer.
+    NexxusHubApi.dropNode(req.params.id);
 
     // Idempotent: 204 whether the id existed or not.
     res.status(204).end();

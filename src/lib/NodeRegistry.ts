@@ -11,6 +11,7 @@ export interface NodeRecord {
   id: string;
   role: string;
   privateIpAddress: string;
+  managementPort?: number;
   dependencies: Record<string, string>;
   stats: Record<string, unknown>;
   registeredAt: number;
@@ -49,6 +50,25 @@ export class NodeRegistry {
    */
   public remove(nodeId: string): boolean {
     return this.nodes.delete(nodeId);
+  }
+
+  /**
+   * Replace a node's `stats` snapshot in place, leaving every other field
+   * (including `registeredAt`) untouched. Used by the periodic refresh that
+   * re-pulls each node's `getStats()`. No-op returning `false` if the node
+   * isn't registered (it may have de-registered between poll scheduling and
+   * this call).
+   */
+  public updateStats(nodeId: string, stats: Record<string, unknown>): boolean {
+    const record = this.nodes.get(nodeId);
+
+    if (!record) {
+      return false;
+    }
+
+    record.stats = stats;
+
+    return true;
   }
 
   /**

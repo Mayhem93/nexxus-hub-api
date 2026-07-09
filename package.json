@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "Nexxus Hub API - management interface for the Nexxus backend",
   "type": "module",
+  "private": true,
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
@@ -35,9 +36,10 @@
     "typescript": "^6.0.0"
   },
   "dependencies": {
-    "@mayhem93/nexxus-core-lib": "file:../nexxus-lib/src/core",
-    "@mayhem93/nexxus-database-lib": "file:../nexxus-lib/src/database",
-    "@mayhem93/nexxus-message-queue-lib": "file:../nexxus-lib/src/message_queue",
+    "@mayhem93/nexxus-core-lib": "0.0.5",
+    "@mayhem93/nexxus-database-lib": "0.0.6",
+    "@mayhem93/nexxus-message-queue-lib": "0.0.5",
+    "@mayhem93/nexxus-redis": "0.0.7",
     "express": "^5.1.0",
     "helmet": "^8.1.0"
   }

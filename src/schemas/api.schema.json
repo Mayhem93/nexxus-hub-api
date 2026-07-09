@@ -12,8 +12,22 @@
     "logger": {
       "type": "string"
     },
+    "database": {
+      "type": "string"
+    },
+    "message_queue": {
+      "type": "string"
+    },
     "token": {
       "type": "string"
+    },
+    "maxPollFailures": {
+      "type": "number",
+      "default": 3
+    },
+    "refreshIntervalMs": {
+      "type": "number",
+      "default": 10000
     },
     "ssl": {
       "type": "object",
@@ -34,6 +48,8 @@
   "required": [
     "name",
     "logger",
+    "database",
+    "message_queue",
     "token"
   ]
 }

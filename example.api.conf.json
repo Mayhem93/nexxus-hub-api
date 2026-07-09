@@ -3,7 +3,25 @@
 		"name": "test",
 		"port": 9000,
     "logger": "WinstonNexxusLogger",
+    "database": "NexxusElasticsearchDb",
+		"message_queue": "NexxusRabbitMq",
     "token": "test"
+	},
+  	"database": {
+		"host": "localhost",
+		"port": 9200
+	},
+	"message_queue": {
+		"host": "localhost",
+		"port": 5672,
+		"user": "guest",
+		"password": "guest"
+	},
+	"redis": {
+		"host": "localhost",
+		"port": 6379,
+		"cluster": false,
+		"password": "1234test"
 	},
 	"logger": {
 		"level": "info",
