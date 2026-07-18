@@ -27,13 +27,15 @@ import {
 import { NexxusRedis } from '@mayhem93/nexxus-redis';
 import {
   RootRoute,
-  NodeRoute
+  NodeRoute,
+  SettingRoute
 } from './routes/index.ts';
 import { NodeRegistry, type NodeRecord } from './NodeRegistry.ts';
 import {
   NotFoundMiddleware,
   ErrorMiddleware,
-  RequestLoggerMiddleware
+  RequestLoggerMiddleware,
+  HubTokenMiddleware
 } from './middlwares/index.ts';
 
 import Express from 'express';
@@ -182,8 +184,12 @@ export class NexxusHubApi extends NexxusBaseService<NexxusHubApiConfig, {} , Rec
     this.express.use(Express.json());
     this.express.use(Express.urlencoded({ extended: true }));
 
+    // Every route sits behind the shared-secret Nxx-Hub-Token check.
+    this.express.use(HubTokenMiddleware);
+
     new RootRoute(this.express);
     new NodeRoute(this.express);
+    new SettingRoute(this.express);
 
     this.express.use(NotFoundMiddleware);
     this.express.use(ErrorMiddleware);
@@ -336,7 +342,7 @@ export class NexxusHubApi extends NexxusBaseService<NexxusHubApiConfig, {} , Rec
       );
 
       if (failures >= NexxusHubApi.instance.config.maxPollFailures) {
-        NexxusHubApi.logger.info(
+        NexxusHubApi.logger.warn(
           `Node "${id}" exceeded ${NexxusHubApi.instance.config.maxPollFailures} failed polls — removing from registry`,
           NexxusHubApi.loggerLabel
         );
