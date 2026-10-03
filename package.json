@@ -1,6 +1,6 @@
 {
   "name": "nexxus-hub-api",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Nexxus Hub API - management interface for the Nexxus backend",
   "type": "module",
   "private": true,
