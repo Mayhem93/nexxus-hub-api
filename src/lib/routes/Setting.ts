@@ -59,9 +59,11 @@ export default class SettingRoute extends NexxusHubApiBaseRoute {
       throw new InvalidParametersException(`Unknown setting "${id}"`);
     }
 
-    const [setting] = await NexxusHubApi.database.getItems({ ids: [id], type: 'setting' });
+    const settingMap : Map<string, NexxusSetting | null> = await NexxusHubApi.database.getItems({ ids: [id], type: 'setting' });
 
-    if (!setting) {
+    const setting = settingMap.get(id);
+
+    if (setting === null || setting === undefined) {
       throw new NotFoundException(`Setting "${id}" is not set`);
     }
 
@@ -84,9 +86,10 @@ export default class SettingRoute extends NexxusHubApiBaseRoute {
     }
 
     const encodedValue = JSON.stringify(value);
-    const [existing] = await NexxusHubApi.database.getItems({ ids: [id], type: 'setting' });
+    const existingMap : Map<string, NexxusSetting | null> = await NexxusHubApi.database.getItems({ ids: [id], type: 'setting' });
+    const existing = existingMap.get(id);
 
-    if (existing) {
+    if (existing !== null) {
       // Update — Hub only supports `replace` on a setting's value. No appId in
       // the patch metadata: settings are deployment-scoped.
       const patch = new NexxusJsonPatch({
